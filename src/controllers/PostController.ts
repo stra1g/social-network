@@ -31,6 +31,20 @@ class PostController {
     }
     return response.status(200).json(postExists)
   }
+
+  async delete(request: Request, response: Response){
+    const { postId, userId } = request.params
+
+    const postExists = await knex.select('*').from('posts').where({id: postId}).first()
+
+    if (!postExists){
+      return response.status(400).json({errorMessage: 'This post does not exists'})
+    }
+
+    await knex('posts').del().where({id: postId}).andWhere({user_id: userId})
+
+    return response.status(200).json({message: 'post deleted'})
+  }
 }
 
 export default new PostController

@@ -14,5 +14,6 @@ router.use(authenticate)
 
 router.get('/post/:id', postController.show)
 router.post('/post/:id', postController.create)
+router.delete('/post/:postId/:userId', postController.delete)
 
 export default router
