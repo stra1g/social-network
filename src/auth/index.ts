@@ -19,6 +19,18 @@ const generateToken = (payload: JWTData) => {
   })
 }
 
+const compareToken = (token: string) => {
+  return new Promise((resolve, reject) => {
+    jwt.verify(token, process.env.JWT_SECRET as jwt.Secret, function(err, decoded){
+      if (err){
+        reject(err)
+      }
+      resolve(decoded)
+    })
+  })
+}
+
 export {
-  generateToken
+  generateToken,
+  compareToken
 }

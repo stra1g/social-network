@@ -13,6 +13,7 @@
     "jsonwebtoken": "^8.5.1",
     "knex": "^0.95.4",
     "pg": "^8.5.1",
+    "universal-cookie": "^4.0.4",
     "yup": "^0.32.9"
   },
   "devDependencies": {
