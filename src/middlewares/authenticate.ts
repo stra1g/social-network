@@ -1,13 +1,12 @@
 import { Request, Response, NextFunction } from 'express'
-import Cookies from 'universal-cookie'
 
+import cookies from '../utils/cookies'
 import { compareToken } from '../auth'
 
 const authenticate = async (request: Request, response: Response, next: NextFunction) => {
-  const cookies = new Cookies(request.headers.cookie)
 
   const authHeader = request.headers.authorization
-  const authCookie = cookies.get('t_usr')
+  const authCookie = cookies.get(request.headers.cookie, 't_usr')
   let token = null
 
   if (authHeader){

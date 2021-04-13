@@ -12,8 +12,8 @@ router.post('/login', authController.login)
 
 router.use(authenticate)
 
-router.get('/post/:id', postController.show)
-router.post('/post/:id', postController.create)
-router.delete('/post/:postId/:userId', postController.delete)
+router.get('/post/:postId', postController.show)
+router.post('/post', postController.create)
+router.delete('/post/:postId', postController.delete)
 
 export default router

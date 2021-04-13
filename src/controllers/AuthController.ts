@@ -30,6 +30,7 @@ class AuthController {
     const token = await generateToken(jwtPayload)
     
     response.cookie('t_usr', String(token), {path: '/', httpOnly: true})
+    response.cookie('c_usr', String(userExists.id))
     return response.status(200).json({token})
   }
 }
