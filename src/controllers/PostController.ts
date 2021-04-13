@@ -20,6 +20,17 @@ class PostController {
 
     return response.status(201).json({message: 'post created'})
   }
+
+  async show(request: Request, response: Response){
+    const { id } = request.params
+
+    const postExists = await knex.select('*').from('posts').where({id}).first()
+
+    if (!postExists){
+      return response.status(400).json({errorMessage: 'This post does not exists'})
+    }
+    return response.status(200).json(postExists)
+  }
 }
 
 export default new PostController

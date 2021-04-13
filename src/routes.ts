@@ -12,6 +12,7 @@ router.post('/login', authController.login)
 
 router.use(authenticate)
 
+router.get('/post/:id', postController.show)
 router.post('/post/:id', postController.create)
 
 export default router
