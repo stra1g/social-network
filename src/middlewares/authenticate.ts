@@ -17,13 +17,13 @@ const authenticate = async (request: Request, response: Response, next: NextFunc
     return response.status(401).json({errorMessage: 'Invalid token provided'})
   }
   
-  const tokenIsValid = await compareToken(token)
-
-  if (!tokenIsValid){
+  try {
+    await compareToken(token)
+    next()
+  } catch(error){
     return response.status(401).json({errorMessage: 'Invalid token provided'})
   }
 
-  next()
 }
 
 export {
