@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from 'express'
 
 import cookies from '../utils/cookies'
-import { compareToken } from '../auth'
+import { AccessToken } from '../auth/classes/AccessToken'
 
 const authenticate = async (request: Request, response: Response, next: NextFunction) => {
 
   const authHeader = request.headers.authorization
-  const authCookie = cookies.get(request.headers.cookie, 't_usr')
+  const authCookie = cookies.get(request.headers.cookie, 'access_token')
   let token = null
 
   if (authHeader){
@@ -18,7 +18,7 @@ const authenticate = async (request: Request, response: Response, next: NextFunc
   }
   
   try {
-    await compareToken(token)
+    await AccessToken.compare(token)
     next()
   } catch(error){
     return response.status(401).json({errorMessage: 'Invalid token provided'})

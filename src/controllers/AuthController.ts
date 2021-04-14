@@ -2,8 +2,7 @@ import { Request, Response } from 'express'
 
 import knex from '../database/connection'
 import { compareHash } from '../utils/hash'
-import { TOKEN_EXPIRATION_TIME } from '../auth/confs'
-import { generateToken } from '../auth'
+import { AccessToken } from '../auth/classes/AccessToken'
 
 class AuthController {
   async login(request: Request, response: Response){
@@ -21,17 +20,12 @@ class AuthController {
       return response.status(400).json({errorMessage: 'User not found'})
     }
 
-    const jwtPayload = {
-      iss: 'social_network_api',
-      sub: userExists.id,
-      exp: Math.floor(Date.now() / 1000) + TOKEN_EXPIRATION_TIME
-    }
-
-    const token = await generateToken(jwtPayload)
+    const _accessToken = new AccessToken(userExists.id)
+    const accessToken = await _accessToken.generate()
     
-    response.cookie('t_usr', String(token), {path: '/', httpOnly: true})
+    response.cookie('access_token', String(accessToken), {path: '/', httpOnly: true})
     response.cookie('c_usr', String(userExists.id))
-    return response.status(200).json({token})
+    return response.status(200).json({accessToken})
   }
 }
 
