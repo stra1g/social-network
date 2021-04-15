@@ -12,6 +12,8 @@ router.post('/login', authController.login)
 
 router.use(authenticate)
 
+router.get('/refresh-token', authController.refreshToken)
+
 router.get('/post/:postId', postController.show)
 router.post('/post', postController.create)
 router.delete('/post/:postId', postController.delete)

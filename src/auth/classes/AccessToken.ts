@@ -15,7 +15,7 @@ class AccessToken extends Token {
     }
   }
 
-  generate():Promise<unknown> {
+  generate():Promise<string | undefined> {
     return new Promise((resolve, reject) => {
       jwt.sign(this.payload, process.env.TOKEN_SECRET_KEY as jwt.Secret, {algorithm: ALGORITHM}, function(err, token){
         if (err){
@@ -26,13 +26,13 @@ class AccessToken extends Token {
     })
   }
 
-  static compare(token: string):Promise<unknown>{
+  static compare(token: string):Promise<JWTData>{
     return new Promise((resolve, reject) => {
       jwt.verify(token, process.env.TOKEN_SECRET_KEY as jwt.Secret, function(err, decoded){
         if (err){
           reject(err)
         }
-        resolve(decoded)
+        resolve(decoded as JWTData)
       })
     })
   } 
