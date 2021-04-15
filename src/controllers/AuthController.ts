@@ -42,7 +42,7 @@ class AuthController {
     response.cookie('access_token', String(accessToken), {path: '/', httpOnly: true})
     response.cookie('refresh_token', String(newRefreshToken), {path: '/', httpOnly: true})
 
-    return response.status(200).json({accessToken, refreshToken})
+    return response.status(200).json({accessToken, newRefreshToken})
   }
 }
 
