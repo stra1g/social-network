@@ -2,7 +2,6 @@ import { Request, Response } from 'express'
 
 import knex from '../database/connection'
 import { compareHash } from '../utils/hash'
-import { AccessToken } from '../auth/classes/AccessToken'
 import { RefreshToken } from '../auth/classes/RefreshToken'
 import { getAuthTokens } from '../auth'
 import cookies from '../utils/cookies'

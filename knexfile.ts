@@ -11,6 +11,9 @@ export default {
       tableName: 'knex_migrations',
       directory: './src/database/migrations',
       extension: 'ts'
+    },
+    seeds: {
+      directory: './src/database/seeds'
     }
   },
 
@@ -30,6 +33,9 @@ export default {
       directory: './src/database/migrations',
       extension: 'ts'
     },
+    seeds: {
+      directory: './src/database/seeds'
+    }
   },
 
   production: {
