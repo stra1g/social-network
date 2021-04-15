@@ -3,7 +3,7 @@ import request from 'supertest'
 import app from '../../app'
 import connection from '../../database/connection'
 
-describe('Users', () => {
+describe('Register', () => {
   beforeAll(async (done) => {
     await connection.migrate.latest()
     done()
@@ -19,7 +19,7 @@ describe('Users', () => {
     const response = await request(app).post('/register').send({
       name: "Luis Vitor",
       username: 'stra1g09',
-      email: 'luis@luis.com',
+      email: 'luis@stra1g.com',
       password: 'abc123abc',
       biography: 'any text'
     })
@@ -31,7 +31,7 @@ describe('Users', () => {
     const response = await request(app).post('/register').send({
       name: "Luis Vitor",
       username: 'stra1g',
-      email: 'luis@luis.com',
+      email: 'luis@stra1g.com',
       password: 'abc123abc',
       biography: 'any text'
     })
