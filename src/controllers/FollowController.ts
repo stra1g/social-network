@@ -75,6 +75,15 @@ class FollowController{
 
     return response.status(200).json(followers)
   }
+  async listFollowing(request: Request, response: Response){
+    const userId = cookies.get(request.headers.cookie, 'c_usr')
+
+    const following = await knex.select('users.name', 'users.username').from('follow_users')
+      .where({user_id: userId})
+      .join('users', 'follow_users.followed_user', '=', 'users.id')
+
+    return response.status(200).json(following)
+  }
 }
 
 export default new FollowController
