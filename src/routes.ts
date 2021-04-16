@@ -22,5 +22,6 @@ router.put('/post/:postId', postController.update)
 
 router.post('/follow/:id', followController.follow)
 router.post('/unfollow/:id', followController.unfollow)
+router.get('/followers', followController.listFollowers)
 
 export default router

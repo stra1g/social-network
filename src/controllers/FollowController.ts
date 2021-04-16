@@ -66,6 +66,15 @@ class FollowController{
 
     return response.status(200).json({message: 'User was unfollowed'})
   }
+  async listFollowers(request: Request, response: Response){
+    const userId = cookies.get(request.headers.cookie, 'c_usr')
+
+    const followers = await knex.select('users.name', 'users.username').from('follow_users')
+      .where({followed_user: userId})
+      .join('users', 'follow_users.user_id', '=', 'users.id')
+
+    return response.status(200).json(followers)
+  }
 }
 
 export default new FollowController
