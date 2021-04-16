@@ -17,5 +17,6 @@ router.get('/refresh-token', authController.refreshToken)
 router.get('/post/:postId', postController.show)
 router.post('/post', postController.create)
 router.delete('/post/:postId', postController.delete)
+router.put('/post/:postId', postController.update)
 
 export default router

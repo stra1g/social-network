@@ -48,6 +48,22 @@ class PostController {
 
     return response.status(200).json({message: 'post deleted'})
   }
+
+  async update(request: Request, response: Response){
+    const userId = cookies.get(request.headers.cookie, 'c_usr')
+    const { description } = request.body
+    const { postId } = request.params
+
+    const postExists = await knex.select('*').from('posts').where({id: postId}).first()
+
+    if (!postExists){
+      return response.status(400).json({errorMessage: 'This post does not exists'})
+    }
+
+    await knex('posts').update({description: String(description)}).where({id: postId}).andWhere({user_id: userId})
+
+    return response.status(200).json({message: 'post updated'})
+  }
 }
 
 export default new PostController
