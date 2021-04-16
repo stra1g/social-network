@@ -3,6 +3,7 @@ import { Router } from 'express'
 import userController from './controllers/UserController'
 import authController from './controllers/AuthController'
 import postController from './controllers/PostController'
+import followController from './controllers/FollowController'
 import { authenticate } from './middlewares/authenticate'
 
 const router = Router()
@@ -19,7 +20,7 @@ router.post('/post', postController.create)
 router.delete('/post/:postId', postController.delete)
 router.put('/post/:postId', postController.update)
 
-router.post('/follow/:id', userController.follow)
-router.post('/unfollow/:id', userController.unfollow)
+router.post('/follow/:id', followController.follow)
+router.post('/unfollow/:id', followController.unfollow)
 
 export default router
