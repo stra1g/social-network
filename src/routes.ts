@@ -19,4 +19,6 @@ router.post('/post', postController.create)
 router.delete('/post/:postId', postController.delete)
 router.put('/post/:postId', postController.update)
 
+router.post('/follow/:id', userController.follow)
+
 export default router

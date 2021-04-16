@@ -3,6 +3,7 @@ import { Request, Response } from 'express'
 import knex from '../database/connection'
 import { userSchema } from '../utils/schemaValidation'
 import { makeHash } from '../utils/hash'
+import cookies from '../utils/cookies'
 
 class UserController {
   async create(request: Request, response: Response){
@@ -31,6 +32,39 @@ class UserController {
     })
 
     return response.status(201).json({message: 'user created'})
+  }
+  async follow(request: Request, response: Response){
+    const userId = cookies.get(request.headers.cookie, 'c_usr')
+    const followedUserId = request.params.id
+    
+    const userExists = await knex.select('*').from('users').where({id: userId}).first()
+
+    if (!userExists){
+      return response.status(400).json({errorMessage: 'This user does not exists'})
+    }
+
+    const followedUserExists = await knex.select('*').from('users').where({id: followedUserId}).first()
+
+    if (!followedUserExists){
+      return response.status(400).json({errorMessage: 'User not found'})
+    }
+
+    if (userExists.id === followedUserExists.id){
+      return response.status(400).json({errorMessage: 'You can not follow yourself'})
+    }
+
+    await knex('users').update({
+      following_count: userExists.following_count + 1
+    }).where({id: userExists.id})
+    await knex('users').update({
+      followers_count: followedUserExists.followers_count + 1
+    }).where({id: followedUserExists.id})
+    await knex('follow_users').insert({
+      user_id: userExists.id,
+      followed_user: followedUserExists.id
+    })
+
+    return response.status(200).json({message: 'User was followed'})
   }
 }
 
