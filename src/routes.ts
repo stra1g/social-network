@@ -17,6 +17,7 @@ router.get('/refresh-token', authController.refreshToken)
 router.use(authenticate)
 
 router.get('/post/:postId', postController.show)
+router.get('/posts', postController.list)
 router.post('/post', postController.create)
 router.delete('/post/:postId', postController.delete)
 router.put('/post/:postId', postController.update)
@@ -28,5 +29,6 @@ router.get('/following', followController.listFollowing)
 
 router.post('/like/:id', likeController.like)
 router.post('/unlike/:id', likeController.unlike)
+router.get('/likedPosts', likeController.listLikedPosts)
 
 export default router

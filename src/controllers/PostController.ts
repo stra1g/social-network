@@ -64,6 +64,18 @@ class PostController {
 
     return response.status(200).json({message: 'post updated'})
   }
+
+  async list(request:Request, response: Response){
+    const userId = cookies.get(request.headers.cookie, 'c_usr')
+
+    const posts = await knex.select('users.name', 'users.username' ,'posts.description', 'posts.likes_count')
+      .from('follow_users')
+      .where('follow_users.user_id', userId)
+      .join('posts', 'posts.user_id', '=', 'follow_users.followed_user')
+      .join('users', 'users.id', '=', 'posts.user_id')
+
+    return response.status(200).json(posts)
+  }
 }
 
 export default new PostController
