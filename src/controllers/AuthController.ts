@@ -3,6 +3,7 @@ import { Request, Response } from 'express'
 import knex from '../database/connection'
 import { compareHash } from '../utils/hash'
 import { RefreshToken } from '../auth/classes/RefreshToken'
+import { AccessToken } from '../auth/classes/AccessToken'
 import { getAuthTokens } from '../auth'
 import cookies from '../utils/cookies'
 
@@ -22,26 +23,31 @@ class AuthController {
       return response.status(400).json({errorMessage: 'User not found'})
     }
 
-    const { accessToken, newRefreshToken } = await getAuthTokens(userExists.id)
+    const { newAccessToken, newRefreshToken } = await getAuthTokens(userExists.id)
     
-    response.cookie('access_token', String(accessToken), {path: '/', httpOnly: true})
+    response.cookie('access_token', String(newAccessToken), {path: '/', httpOnly: true})
     response.cookie('refresh_token', String(newRefreshToken), {path: '/', httpOnly: true})
     response.cookie('c_usr', String(userExists.id))
-    return response.status(200).json({accessToken, newRefreshToken})
+    return response.status(200).json({newAccessToken, newRefreshToken})
   }
 
   async refreshToken(request: Request, response: Response){
     const refreshToken = cookies.get(request.headers.cookie, 'refresh_token')
-    if (!refreshToken) return response.status(401).json({errorMessage: 'Invalid token provided'})
+    const accessToken = cookies.get(request.headers.cookie, 'access_token')
+    if (!refreshToken || !accessToken) return response.status(401).json({errorMessage: 'Invalid token provided'})
 
-    const { sub } = await RefreshToken.compare(refreshToken)
+    try {
+      const { sub } = await RefreshToken.compare(refreshToken)
 
-    const { accessToken, newRefreshToken } = await getAuthTokens(sub)
-
-    response.cookie('access_token', String(accessToken), {path: '/', httpOnly: true})
-    response.cookie('refresh_token', String(newRefreshToken), {path: '/', httpOnly: true})
-
-    return response.status(200).json({accessToken, newRefreshToken})
+      const { newAccessToken, newRefreshToken } = await getAuthTokens(sub)
+  
+      response.cookie('access_token', String(newAccessToken), {path: '/', httpOnly: true})
+      response.cookie('refresh_token', String(newRefreshToken), {path: '/', httpOnly: true})
+  
+      return response.status(200).json({accessToken, newRefreshToken})
+    } catch(error){
+      return response.status(401).json({errorMessage: 'Invalid token provided'})
+    }    
   }
 }
 
