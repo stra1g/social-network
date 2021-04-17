@@ -56,8 +56,17 @@ class LikeController {
 
       return response.status(200).json({message: 'Post unliked'})
   }
-  async listPostsLiked(request: Request, response: Response){
+  // name - username - description - likes_count
+  async listLikedPosts(request: Request, response: Response){
+    const userId = cookies.get(request.headers.cookie, 'c_usr')
 
+    const likedPosts = await knex.select('users.name', 'users.username', 'posts.description', 'posts.likes_count')
+      .from('likes_post')
+      .where('likes_post.user_id', userId)
+      .join('posts', 'posts.id', '=', 'likes_post.post_id')
+      .join('users', 'users.id', '=', 'posts.user_id')
+
+    return response.status(200).json(likedPosts)
   }
 }
 
