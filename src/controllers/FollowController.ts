@@ -1,11 +1,10 @@
 import { Request, Response } from 'express'
 
 import knex from '../database/connection'
-import cookies from '../utils/cookies'
 
 class FollowController{
   async follow(request: Request, response: Response){
-    const userId = cookies.get(request.headers.cookie, 'c_usr')
+    const userId = request.userId
     const followedUserId = request.params.id
     
     const userExists = await knex.select('*').from('users').where({id: userId}).first()
@@ -38,7 +37,7 @@ class FollowController{
     return response.status(200).json({message: 'User was followed'})
   }
   async unfollow(request: Request, response: Response){
-    const userId = cookies.get(request.headers.cookie, 'c_usr')
+    const userId = request.userId
     const unfollowedUserId = request.params.id
 
     const userIsFollowed = await knex.select('*').from('follow_users').where({
@@ -67,7 +66,7 @@ class FollowController{
     return response.status(200).json({message: 'User was unfollowed'})
   }
   async listFollowers(request: Request, response: Response){
-    const userId = cookies.get(request.headers.cookie, 'c_usr')
+    const userId = request.userId
 
     const followers = await knex.select('users.name', 'users.username').from('follow_users')
       .where({followed_user: userId})
@@ -76,7 +75,7 @@ class FollowController{
     return response.status(200).json(followers)
   }
   async listFollowing(request: Request, response: Response){
-    const userId = cookies.get(request.headers.cookie, 'c_usr')
+    const userId = request.userId
 
     const following = await knex.select('users.name', 'users.username').from('follow_users')
       .where({user_id: userId})

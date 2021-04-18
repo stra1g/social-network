@@ -18,12 +18,12 @@ const authenticate = async (request: Request, response: Response, next: NextFunc
   }
   
   try {
-    await AccessToken.compare(token)
+    const { sub } = await AccessToken.compare(token)
+    request.userId = sub
     next()
-  } catch(error){
+  } catch(error){ 
     return response.status(401).json({errorMessage: 'Invalid token provided'})
   }
-
 }
 
 export {

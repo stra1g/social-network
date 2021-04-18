@@ -1,12 +1,11 @@
 import { Request, Response } from 'express'
 
 import knex from '../database/connection'
-import cookies from '../utils/cookies'
 
 class PostController {
   async create(request: Request, response: Response){
     const { description } = request.body
-    const userId = cookies.get(request.headers.cookie, 'c_usr')
+    const userId = request.userId
 
     const userExists = await knex.select('*').from('users').where({id: userId}).first()
 
@@ -34,7 +33,7 @@ class PostController {
   }
 
   async delete(request: Request, response: Response){
-    const userId = cookies.get(request.headers.cookie, 'c_usr')
+    const userId = request.userId
 
     const { postId } = request.params
 
@@ -50,7 +49,7 @@ class PostController {
   }
 
   async update(request: Request, response: Response){
-    const userId = cookies.get(request.headers.cookie, 'c_usr')
+    const userId = request.userId
     const { description } = request.body
     const { postId } = request.params
 
@@ -66,11 +65,11 @@ class PostController {
   }
 
   async list(request:Request, response: Response){
-    const userId = cookies.get(request.headers.cookie, 'c_usr')
+    const userId = request.userId
 
     const posts = await knex.select('users.name', 'users.username' ,'posts.description', 'posts.likes_count')
       .from('follow_users')
-      .where('follow_users.user_id', userId)
+      .where('follow_users.user_id', String(userId))
       .join('posts', 'posts.user_id', '=', 'follow_users.followed_user')
       .join('users', 'users.id', '=', 'posts.user_id')
 

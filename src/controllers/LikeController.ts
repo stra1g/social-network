@@ -1,11 +1,10 @@
 import { Request, Response } from 'express'
 
 import knex from '../database/connection'
-import cookies from '../utils/cookies'
 
 class LikeController {
   async like(request: Request, response: Response){
-    const userId = cookies.get(request.headers.cookie, 'c_usr')
+    const userId = request.userId
     const { id } = request.params
 
     const postExists = await knex.select('*').from('posts').where({id}).first()
@@ -27,7 +26,7 @@ class LikeController {
     return response.status(200).json({message: 'Post liked'})
   }
   async unlike(request: Request, response: Response){
-    const userId = cookies.get(request.headers.cookie, 'c_usr')
+    const userId = request.userId
     const { id } = request.params
 
     const postIsLiked = await knex.select('*').from('likes_post')
@@ -56,13 +55,13 @@ class LikeController {
 
       return response.status(200).json({message: 'Post unliked'})
   }
-  // name - username - description - likes_count
+
   async listLikedPosts(request: Request, response: Response){
-    const userId = cookies.get(request.headers.cookie, 'c_usr')
+    const userId = request.userId
 
     const likedPosts = await knex.select('users.name', 'users.username', 'posts.description', 'posts.likes_count')
       .from('likes_post')
-      .where('likes_post.user_id', userId)
+      .where('likes_post.user_id', String(userId))
       .join('posts', 'posts.id', '=', 'likes_post.post_id')
       .join('users', 'users.id', '=', 'posts.user_id')
 
