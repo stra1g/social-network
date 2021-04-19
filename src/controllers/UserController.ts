@@ -3,7 +3,6 @@ import { Request, Response } from 'express'
 import knex from '../database/connection'
 import { userSchema } from '../utils/schemaValidation'
 import { makeHash } from '../utils/hash'
-import cookies from '../utils/cookies'
 
 class UserController {
   async create(request: Request, response: Response){
@@ -15,7 +14,9 @@ class UserController {
       return response.status(400).json({errorMessage: 'Invalid data provided'})
     }
 
-    const userAlreadyExists = await knex.select('id').from('users').where({email}).orWhere({username}).first()
+    const userAlreadyExists = await knex.select(
+      'id', 'name', 'username', 'biography', 'following_count', 'followers_count'
+      ).from('users').where({email}).orWhere({username}).first()
 
     if (userAlreadyExists){
       return response.status(409).json({errorMessage: 'User already exists'})

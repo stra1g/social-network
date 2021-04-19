@@ -12,6 +12,8 @@ import {
   REFRESH_TOKEN_EXPIRATION_TIME
 } from '../auth/confs'
 
+const PREFIX_CACHE = 'userId:'
+
 class AuthController {
   async login(request: Request, response: Response){
     const { email, password } = request.body
@@ -33,6 +35,17 @@ class AuthController {
     response.cookie('access_token', String(newAccessToken), {path: '/', httpOnly: true})
     response.cookie('refresh_token', String(newRefreshToken), {path: '/', httpOnly: true})
     response.cookie('c_usr', String(userExists.id))
+
+    const data = {
+      id: userExists.id,
+      name: userExists.name,
+      username: userExists.username,
+      biography: userExists.biography,
+      followingCount: userExists.following_count,
+      followersCount: userExists.followers_count,
+    }
+    await cache.set(`${PREFIX_CACHE}${userExists.id}`, JSON.stringify(data))
+    
     return response.status(200).json({newAccessToken, newRefreshToken})
   }
 
@@ -54,10 +67,11 @@ class AuthController {
   }
   
   async logout(request: Request, response: Response){
-    const { refreshToken, accessToken } = request
+    const { refreshToken, accessToken, userId } = request
 
     cache.set(`${BLACKLIST_TOKEN_PREFIX}${accessToken}`, '1', TOKEN_EXPIRATION_TIME)
     cache.set(`${BLACKLIST_REFRESH_TOKEN_PREFIX}${refreshToken}`, '1', REFRESH_TOKEN_EXPIRATION_TIME)
+    cache.del(`${PREFIX_CACHE}${userId}`)
 
     response.clearCookie('access_token')
     response.clearCookie('refresh_token')
