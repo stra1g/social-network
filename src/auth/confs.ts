@@ -8,3 +8,4 @@ export interface JWTData {
 }
 export const BLACKLIST_TOKEN_PREFIX = 'blacklistAccessToken:'
 export const BLACKLIST_REFRESH_TOKEN_PREFIX = 'blacklistRefreshToken:'
+export const PREFIX_CACHE = 'userId:'

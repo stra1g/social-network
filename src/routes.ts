@@ -11,7 +11,7 @@ const router = Router()
 
 router.post('/register', userController.create)
 router.post('/login', authController.login)
-// só se o token estiver inválido que deverá ser feito o refresh do token
+
 router.get('/refresh-token', authController.refreshToken)
 
 router.use(authenticate)

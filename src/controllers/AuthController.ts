@@ -9,10 +9,10 @@ import {
   BLACKLIST_TOKEN_PREFIX, 
   BLACKLIST_REFRESH_TOKEN_PREFIX,
   TOKEN_EXPIRATION_TIME,
-  REFRESH_TOKEN_EXPIRATION_TIME
+  REFRESH_TOKEN_EXPIRATION_TIME,
+  PREFIX_CACHE
 } from '../auth/confs'
 
-const PREFIX_CACHE = 'userId:'
 
 class AuthController {
   async login(request: Request, response: Response){
