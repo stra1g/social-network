@@ -5,6 +5,12 @@ import { compareHash } from '../utils/hash'
 import { RefreshToken } from '../auth/classes/RefreshToken'
 import { getAuthTokens } from '../auth'
 import cache from '../services/redis'
+import { 
+  BLACKLIST_TOKEN_PREFIX, 
+  BLACKLIST_REFRESH_TOKEN_PREFIX,
+  TOKEN_EXPIRATION_TIME,
+  REFRESH_TOKEN_EXPIRATION_TIME
+} from '../auth/confs'
 
 class AuthController {
   async login(request: Request, response: Response){
@@ -46,8 +52,17 @@ class AuthController {
       return response.status(401).json({errorMessage: 'Invalid token provided'})
     }    
   }
+  
   async logout(request: Request, response: Response){
+    const { refreshToken, accessToken } = request
 
+    cache.set(`${BLACKLIST_TOKEN_PREFIX}${accessToken}`, '1', TOKEN_EXPIRATION_TIME)
+    cache.set(`${BLACKLIST_REFRESH_TOKEN_PREFIX}${refreshToken}`, '1', REFRESH_TOKEN_EXPIRATION_TIME)
+
+    response.clearCookie('access_token')
+    response.clearCookie('refresh_token')
+
+    return response.status(200).json({message: 'unlogged'})
   }
 }
 
