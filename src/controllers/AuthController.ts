@@ -31,8 +31,8 @@ class AuthController {
   }
 
   async refreshToken(request: Request, response: Response){
-    const refreshToken = cookies.get(request.headers.cookie, 'refresh_token')
-    const accessToken = cookies.get(request.headers.cookie, 'access_token')
+    const refreshToken = cookies.get(request.headers.cookie, 'refresh_token') || request.headers['x-refresh-token']
+    const accessToken = cookies.get(request.headers.cookie, 'access_token') || request.headers.authorization
     if (!refreshToken || !accessToken) return response.status(401).json({errorMessage: 'Invalid token provided'})
 
     try {
