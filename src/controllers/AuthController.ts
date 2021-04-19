@@ -4,7 +4,7 @@ import knex from '../database/connection'
 import { compareHash } from '../utils/hash'
 import { RefreshToken } from '../auth/classes/RefreshToken'
 import { getAuthTokens } from '../auth'
-import cookies from '../utils/cookies'
+import cache from '../services/redis'
 
 class AuthController {
   async login(request: Request, response: Response){
@@ -31,9 +31,7 @@ class AuthController {
   }
 
   async refreshToken(request: Request, response: Response){
-    const refreshToken = cookies.get(request.headers.cookie, 'refresh_token') || request.headers['x-refresh-token']
-    const accessToken = cookies.get(request.headers.cookie, 'access_token') || request.headers.authorization
-    if (!refreshToken || !accessToken) return response.status(401).json({errorMessage: 'Invalid token provided'})
+    const { refreshToken, accessToken } = request
 
     try {
       const { sub } = await RefreshToken.compare(refreshToken)
@@ -47,6 +45,9 @@ class AuthController {
     } catch(error){
       return response.status(401).json({errorMessage: 'Invalid token provided'})
     }    
+  }
+  async logout(request: Request, response: Response){
+
   }
 }
 

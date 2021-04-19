@@ -5,21 +5,15 @@ import { AccessToken } from '../auth/classes/AccessToken'
 
 const authenticate = async (request: Request, response: Response, next: NextFunction) => {
 
-  const authHeader = request.headers.authorization
-  const authCookie = cookies.get(request.headers.cookie, 'access_token')
-  let token = null
-
-  if (authHeader){
-    token = authHeader.split(' ')[1]
-  } else if (authCookie){
-    token = authCookie
-  } else {
-    return response.status(401).json({errorMessage: 'Invalid token provided'})
-  }
+  const accessToken = cookies.get(request.headers.cookie, 'access_token') || request.headers.authorization
+  const refreshToken = cookies.get(request.headers.cookie, 'refresh_token') || request.headers['x-refresh-token']
+  if (!refreshToken || !accessToken) return response.status(401).json({errorMessage: 'Invalid token provided'})
   
   try {
-    const { sub } = await AccessToken.compare(token)
+    const { sub } = await AccessToken.compare(accessToken)
     request.userId = sub
+    request.accessToken = accessToken
+    request.refreshToken = refreshToken
     next()
   } catch(error){ 
     return response.status(401).json({errorMessage: 'Invalid token provided'})
