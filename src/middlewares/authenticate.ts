@@ -16,7 +16,11 @@ const authenticate = async (request: Request, response: Response, next: NextFunc
   const refreshTokenExists = await cache.get(`${BLACKLIST_REFRESH_TOKEN_PREFIX}${refreshToken}`)
 
   if (accessTokenExists || refreshTokenExists){
-    await cache.get(`${PREFIX_CACHE}${userId}`)
+    const value = await cache.get(`${PREFIX_CACHE}${userId}`)
+
+    if (value){
+      await cache.del(`${PREFIX_CACHE}${userId}`)
+    }
 
     return response.status(401).json({errorMessage: 'Invalid token provided'})
   }
