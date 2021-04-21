@@ -30,11 +30,13 @@ router.post('/unfollow/:id', followController.unfollow)
 router.get('/followers', followController.listFollowers)
 router.get('/following', followController.listFollowing)
 
-router.post('/like/:id', likeController.likePost)
-router.post('/unlike/:id', likeController.unlikePost)
+router.post('/like-post/:id', likeController.likePost)
+router.post('/unlike-post/:id', likeController.unlikePost)
 router.get('/likedPosts', likeController.listLikedPosts)
 
 router.post('/comment', commentController.comment)
 router.post('/reply-comment', commentController.reply)
+router.post('/like-comment/:id', likeController.likeComment)
+router.post('/unlike-comment/:id', likeController.unlikeComment)
 
 export default router
