@@ -5,6 +5,7 @@ import authController from './controllers/AuthController'
 import postController from './controllers/PostController'
 import followController from './controllers/FollowController'
 import likeController from './controllers/LikeController'
+import commentController from './controllers/CommentController'
 import { authenticate } from './middlewares/authenticate'
 
 const router = Router()
@@ -32,5 +33,8 @@ router.get('/following', followController.listFollowing)
 router.post('/like/:id', likeController.like)
 router.post('/unlike/:id', likeController.unlike)
 router.get('/likedPosts', likeController.listLikedPosts)
+
+router.post('/comment', commentController.comment)
+router.post('/reply-comment', commentController.reply)
 
 export default router
